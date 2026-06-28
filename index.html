@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Project Codename - The Alchemist 5.1</title>
+<title>The Alchemist 5.2</title>
 <style>
 :root{--bg:#090603;--panel:#1b130b;--panel2:#2b1e11;--gold:#ddb04e;--gold2:#8b642a;--text:#f8ecd2;--muted:#cbb98d;--green:#6fc77a;--yellow:#d7aa47;--red:#bd5d53}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#2f1f0e 0,#090603 60%);color:var(--text);font-family:Arial,system-ui,sans-serif;font-size:18px}
@@ -29,18 +29,23 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
 .titlecard{text-align:center;padding:28px}.quote{font-style:italic;color:#edd28d;font-size:20px}
 @media(max-width:700px){body{font-size:16px}h1{font-size:26px}.controls>*{width:100%}.controls input{min-width:0}.row{align-items:flex-start;flex-direction:column}}
 </style></head>
-<body><header><h1>⚗️ The Alchemist</h1><div class="small">Project Codename • The Alchemist • Release 5.1 — The Workshop</div></header>
+<body><header><h1>⚗️ The Alchemist</h1><div class="small">Release 5.2 — The Workshop • Aldren the Archivist</div></header>
 <div class="wrap">
 <div id="setup" class="card titlecard" style="display:none">
 <h1>⚗️ The Alchemist</h1><p class="quote">“Knowledge, once recorded, is never truly lost.”</p><p class="small">— Aldren the Archivist</p>
 <h2>Before we begin...</h2><p>What shall Aldren call you?</p><div class="controls" style="justify-content:center"><input id="profileName" placeholder="Your character name"><button onclick="createFirstProfile()">Begin Archive</button></div>
 </div>
 <div id="app" style="display:none">
-<div class="card advisor"><h2 id="welcomeLine">Welcome back.</h2><div id="greetingBox" class="recipe"></div><div id="aldrenInventoryAlert" class="notice" style="display:none"></div></div>
+<div class="card advisor"><h2 id="welcomeLine">Welcome back.</h2><div id="greetingBox" class="recipe"></div></div>
 <div class="topgrid"><div class="card"><div class="small">Traits Recorded</div><div id="traitStat" class="stat">0/0</div></div><div class="card"><div class="small">Reagents Complete</div><div id="ingStat" class="stat">0/0</div></div><div class="card"><div class="small">Reagents Owned</div><div id="ownedStat" class="stat">0</div></div><div class="card"><div class="small">Useful Experiments</div><div id="craftStat" class="stat">0</div></div></div>
 <div class="card"><div class="row"><b>Archive Progress</b><b id="pct">0%</b></div><div class="bar"><div id="fill" class="fill"></div></div><div id="remainingText" class="small" style="margin-top:8px"></div></div>
-<div class="tabs"><button class="tab active" onclick="showTab('advisor',this)">Aldren</button><button class="tab" onclick="showTab('plan',this)">Completion Plan</button><button class="tab" onclick="showTab('ingredients',this)">Reagents</button><button class="tab" onclick="showTab('builder',this)">Laboratory</button><button class="tab" onclick="showTab('session',this)">Session</button><button class="tab" onclick="showTab('verification',this)">Verification</button><button class="tab" onclick="showTab('settings',this)">Settings</button><button class="tab" onclick="showTab('saves',this)">Saves</button></div>
-<section id="advisor" class="panel active"><div class="card advisor"><h2>Aldren's Recommendation</h2><div id="advisorText" class="recipe"></div><div class="controls" style="margin-top:12px"><button class="good" onclick="markBest()">Crafted it — record discovery</button><button class="secondary" onclick="undoLast()">Undo Last Craft</button><button class="secondary" onclick="inventoryOnly=!inventoryOnly;render()">Inventory-only: <span id="invMode">OFF</span></button><button class="secondary" onclick="togglePlayMode()">Game Mode</button></div></div><div class="card"><h2>Next 5 Experiments</h2><div id="nextFive"></div></div></section>
+<div class="tabs"><button class="tab active" onclick="showTab('advisor',this)">Aldren</button><button class="tab" onclick="showTab('plan',this)">Completion Plan</button><button class="tab" onclick="showTab('ingredients',this)">Reagents</button><button class="tab" onclick="showTab('builder',this)">Laboratory</button><button class="tab" onclick="showTab('session',this)">Session</button><button class="tab" onclick="showTab('verification',this)">Archive Verification</button><button class="tab" onclick="showTab('settings',this)">Settings</button><button class="tab" onclick="showTab('saves',this)">Saves</button></div>
+<section id="advisor" class="panel active"><div class="card advisor"><h2>Aldren's Recommendation</h2><div id="advisorText" class="recipe"></div><div class="controls" style="margin-top:12px"><button class="good" onclick="markBest()">Crafted it — record discovery</button><button class="secondary" onclick="undoLast()">Undo Last Craft</button><button class="secondary" onclick="inventoryOnly=!inventoryOnly;render()">Inventory-only: <span id="invMode">OFF</span></button><button class="secondary" onclick="togglePlayMode()">Game Mode</button></div></div><div class="card"><h2>Next 5 Experiments</h2><div id="nextFive"></div></div>
+  <div class="card advisor">
+    <h2>Inventory Report</h2>
+    <div id="aldrenInventoryAlert" class="recipe"></div>
+  </div>
+</section>
 <section id="plan" class="panel"><div class="card"><h2>Completion Plan</h2><p class="small">Aldren calculates a practical path from your current archive.</p><div class="controls"><button onclick="buildPlan()">Calculate Plan</button><button class="secondary" onclick="inventoryOnly=!inventoryOnly;buildPlan();render()">Inventory-only: <span id="invMode2">OFF</span></button></div><div id="planSummary" class="notice">Click Calculate Plan.</div><div id="planList"></div></div></section>
 <section id="ingredients" class="panel"><div class="card"><div class="controls"><input id="search" placeholder="Search reagent or trait..." oninput="render()"><select id="filter" onchange="render()"><option value="all">Show all</option><option value="favorites">Favorites only</option><option value="incomplete">Only incomplete</option><option value="complete">Only complete</option><option value="owned">Only reagents I own</option></select><button onclick="markOwnedFirstTrait()">Mark first trait for owned</button></div></div><div id="list" class="grid"></div></section>
 <section id="builder" class="panel"><div class="card"><h2>Laboratory</h2><p class="small">Pick one or more effects. Aldren lists mixtures that share all selected effects.</p><div id="effects" class="effectList"></div></div><div class="card"><h2>Matching Recipes</h2><div id="recipes"></div></div></section>
@@ -49,8 +54,8 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
 
 <section id="verification" class="panel">
   <div class="card">
-    <h2>Data Verification</h2>
-    <p class="small">This page exists so we can keep the reagent archive accurate as you compare it against ESO in-game tooltips.</p>
+    <h2>Archivist's Ledger</h2>
+    <p class="small">Aldren keeps this ledger so the reagent archive can be checked against ESO's in-game tooltips.</p>
     <div class="topgrid">
       <div><div class="small">Reagents in Archive</div><div id="verifyReagents" class="stat">0</div></div>
       <div><div class="small">Trait Entries</div><div id="verifyTraits" class="stat">0</div></div>
@@ -61,7 +66,7 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
     </div>
   </div>
   <div class="card">
-    <h2>Verified Corrections Included</h2>
+    <h2>Verified Field Notes</h2>
     <div class="pill">Spider Egg order corrected</div>
     <div class="pill">Water Hyacinth Critical / Weapon Critical corrected</div>
     <div class="pill">Crimson Nirnroot uses Critical</div>
@@ -69,7 +74,7 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
     <div class="pill">Profile archives separated</div>
   </div>
   <div class="card">
-    <h2>Reagent Archive</h2>
+    <h2>Reagent Ledger</h2>
     <div id="verificationList" class="grid"></div>
   </div>
 </section>
@@ -88,6 +93,14 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
   </div>
 
   <div class="card">
+    <h2>Rename Current Archive</h2>
+    <div class="controls">
+      <input id="renameProfileName" placeholder="New name for current archive">
+      <button onclick="renameActiveProfile()">Rename Archive</button>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>Create New Archive</h2>
     <div class="controls">
       <input id="newProfileName" placeholder="New character name">
@@ -102,18 +115,18 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
   </div>
 </section>
 
-<section id="saves" class="panel"><div class="card"><h2>Archive Tools</h2><div class="controls"><button onclick="exportSave()">Export Archive</button><button onclick="importSave()">Import Archive</button><button class="danger" onclick="resetAll()">Reset Everything</button></div><p class="small">Progress saves automatically in this browser.</p><div class="notice"><b>Release 5.1 — The Workshop</b><br>Project Codename umbrella added, Reagents and Laboratory renamed, dashboard cleaned, and low reserve warnings moved to Aldren.</div></div></section>
+<section id="saves" class="panel"><div class="card"><h2>Archive Tools</h2><div class="controls"><button onclick="exportSave()">Export Archive</button><button onclick="importSave()">Import Archive</button><button class="danger" onclick="resetAll()">Reset Everything</button></div><p class="small">Progress saves automatically in this browser.</p><div class="notice"><b>Release 5.2 — The Workshop</b><br>Clean header, Aldren inventory report moved onto the Aldren page, Archive Verification wording polished, and archive rename added.</div></div></section>
 </div></div>
 <script>
 const R={"Beetle Scuttle":["Breach","Increase Armor","Protection","Vitality"],"Blessed Thistle":["Restore Stamina","Increase Weapon Power","Ravage Health","Speed"],"Blue Entoloma":["Ravage Magicka","Cowardice","Restore Health","Invisible"],"Bugloss":["Increase Spell Resist","Restore Health","Cowardice","Restore Magicka"],"Butterfly Wing":["Restore Health","Uncertainty","Lingering Health","Vitality"],"Chaurus Egg":["Timidity","Ravage Magicka","Restore Stamina","Detection"],"Clam Gall":["Increase Spell Resist","Hindrance","Vulnerability","Defile"],"Columbine":["Restore Health","Restore Magicka","Restore Stamina","Unstoppable"],"Corn Flower":["Restore Magicka","Increase Spell Power","Ravage Health","Detection"],"Crimson Nirnroot":["Timidity","Critical","Gradual Ravage Health","Restore Health"],"Dragon's Bile":["Heroism","Vulnerability","Invisible","Vitality"],"Dragon's Blood":["Lingering Health","Restore Stamina","Heroism","Defile"],"Dragon Rheum":["Restore Magicka","Heroism","Enervation","Speed"],"Dragonthorn":["Increase Weapon Power","Restore Stamina","Fracture","Critical"],"Emetic Russula":["Ravage Health","Ravage Magicka","Ravage Stamina","Entrapment"],"Fleshfly Larva":["Ravage Stamina","Gradual Ravage Health","Vulnerability","Vitality"],"Imp Stool":["Maim","Ravage Stamina","Increase Armor","Enervation"],"Lady's Smock":["Increase Spell Power","Restore Magicka","Breach","Critical"],"Luminous Russula":["Ravage Stamina","Maim","Restore Health","Hindrance"],"Mountain Flower":["Increase Armor","Restore Health","Maim","Restore Stamina"],"Mudcrab Chitin":["Increase Spell Resist","Protection","Increase Armor","Defile"],"Namira's Rot":["Critical","Speed","Invisible","Unstoppable"],"Nightshade":["Ravage Health","Gradual Ravage Health","Protection","Defile"],"Nirnroot":["Ravage Health","Uncertainty","Enervation","Invisible"],"Powdered Mother of Pearl":["Lingering Health","Speed","Vitality","Protection"],"Scrib Jelly":["Ravage Magicka","Vulnerability","Speed","Lingering Health"],"Spider Egg":["Hindrance","Invisible","Lingering Health","Defile"],"Stinkhorn":["Fracture","Ravage Health","Increase Weapon Power","Ravage Stamina"],"Torchbug Thorax":["Fracture","Enervation","Detection","Vitality"],"Vile Coagulant":["Timidity","Ravage Health","Restore Magicka","Protection"],"Violet Coprinus":["Breach","Ravage Health","Increase Spell Power","Ravage Magicka"],"Water Hyacinth":["Restore Health","Critical","Weapon Critical","Entrapment"],"White Cap":["Cowardice","Ravage Magicka","Increase Spell Resist","Detection"],"Wormwood":["Critical","Hindrance","Detection","Unstoppable"]};
 const SAVE_KEY="TheAlchemistArchive_v1";let archive=loadArchive(),inventoryOnly=false,best=null,selectedEffects=[],history=JSON.parse(localStorage.TheAlchemistHistory_v1||"[]");
 function newProfile(name){let d={};for(const r in R)d[r]={learned:[false,false,false,false],qty:0,fav:false,reserve:20};return{id:"p_"+Date.now(),name:name||"Adventurer",created:new Date().toISOString(),lastOpen:new Date().toISOString(),data:d,session:{crafts:0,traits:0,complete:0},settings:{greeting:"normal"}}}
-function loadArchive(){try{let a=JSON.parse(localStorage.getItem(SAVE_KEY));if(a&&a.profiles&&a.profiles.length)return a}catch(e){}return{version:"5.1",activeProfile:null,profiles:[],created:new Date().toISOString(),lastSaved:null}}
+function loadArchive(){try{let a=JSON.parse(localStorage.getItem(SAVE_KEY));if(a&&a.profiles&&a.profiles.length)return a}catch(e){}return{version:"5.2",activeProfile:null,profiles:[],created:new Date().toISOString(),lastSaved:null}}
 function profile(){return archive.profiles.find(p=>p.id===archive.activeProfile)}function data(){return profile().data}function session(){return profile().session}
 function save(){archive.lastSaved=new Date().toISOString();let p=profile();if(p)p.lastOpen=new Date().toISOString();localStorage.setItem(SAVE_KEY,JSON.stringify(archive));render()}
 function createFirstProfile(){let name=(profileName.value||"Adventurer").trim();let p=newProfile(name);archive.profiles.push(p);archive.activeProfile=p.id;save()}
 function addProfile(){let name=(document.getElementById("newProfileName").value||"New Character").trim();let p=newProfile(name);archive.profiles.push(p);archive.activeProfile=p.id;document.getElementById("newProfileName").value="";save()}
-function switchProfile(id){archive.activeProfile=id;save()}
+function switchProfile(id){archive.activeProfile=id;save()}function renameActiveProfile(){let p=profile();let box=document.getElementById("renameProfileName");let name=(box.value||"").trim();if(!name){alert("Enter a new archive name first.");return}p.name=name;box.value="";save()}
 function deleteActiveProfile(){if(archive.profiles.length<=1){alert("Aldren must keep at least one archive.");return}let p=profile();if(!confirm("Delete the archive for "+p.name+"?"))return;archive.profiles=archive.profiles.filter(x=>x.id!==p.id);archive.activeProfile=archive.profiles[0].id;save()}
 function renderProfiles(){
  let box=document.getElementById("profileButtons");
@@ -184,16 +197,14 @@ function renderInventoryAlert(){
   if(qty>0 && qty<reserve)lows.push({name:r,qty,reserve,fav:d[r].fav});
  }
  if(!lows.length){
-  box.style.display="none";
-  box.innerHTML="";
+  box.innerHTML="Your reagent shelves are well stocked. Nothing has fallen below its preferred reserve.";
   return;
  }
  lows.sort((a,b)=>(b.fav-a.fav)||(a.qty-a.reserve)-(b.qty-b.reserve)||a.name.localeCompare(b.name));
- box.style.display="block";
- let shown=lows.slice(0,6);
- box.innerHTML=`<b>Aldren's Inventory Note</b><br>${lows.length} reagent reserve${lows.length>1?"s have":" has"} fallen below your preferred limit.<br>`+
+ let shown=lows.slice(0,8);
+ box.innerHTML=`I've noticed ${lows.length} reagent reserve${lows.length>1?"s have":" has"} fallen below your preferred limit.<br>`+
  shown.map(x=>`<span class=pill>${x.fav?"⭐ ":""}${x.name}: ${x.qty}/${x.reserve}</span>`).join("")+
- (lows.length>6?`<br><span class=small>${lows.length-6} more below reserve.</span>`:"");
+ (lows.length>8?`<br><span class=small>${lows.length-8} more below reserve.</span>`:"");
 }
 function renderIngredients(){let d=data(),q=(document.getElementById("search")?.value||"").toLowerCase(),f=(document.getElementById("filter")?.value||"all"),html="";for(const r of Object.keys(R).sort((a,b)=>(d[b].fav-d[a].fav)||a.localeCompare(b))){let k=d[r].learned.filter(Boolean).length,hay=(r+" "+R[r].join(" ")).toLowerCase();if(q&&!hay.includes(q))continue;if(f=="favorites"&&!d[r].fav)continue;if(f=="complete"&&k<4)continue;if(f=="incomplete"&&k==4)continue;if(f=="owned"&&Number(d[r].qty||0)<1)continue;let cls=k==4?"done":k>0?"partial":"none";if(d[r].fav)cls+=" fav";let low=(Number(d[r].qty||0)>0&&Number(d[r].qty||0)<Number(d[r].reserve||20));html+=`<div class="card ${cls}"><div class=row><h3>${d[r].fav?"⭐ ":""}${r}</h3><span class=badge>${k}/4</span></div><div class=row><span class=small>Owned</span><input class=qty type=number min=0 value="${d[r].qty||0}" onchange="data()['${esc(r)}'].qty=this.value;save()"></div><div class=qtyBtns><button onclick="setQty('${esc(r)}',100)">+100</button><button onclick="setQty('${esc(r)}',10)">+10</button><button onclick="setQty('${esc(r)}',1)">+1</button><button onclick="setQty('${esc(r)}',-1)">-1</button><button onclick="setQty('${esc(r)}',-10)">-10</button><button onclick="setQty('${esc(r)}',-100)">-100</button><button onclick="data()['${esc(r)}'].fav=!data()['${esc(r)}'].fav;save()">⭐</button></div><div class=row><span class=small>Reserve</span><input class=qty type=number min=0 value="${d[r].reserve||20}" onchange="data()['${esc(r)}'].reserve=this.value;save()"></div>`;R[r].forEach((t,i)=>html+=`<label class=trait><input type=checkbox ${d[r].learned[i]?"checked":""} onchange="data()['${esc(r)}'].learned[${i}]=this.checked;save()"> ${t}</label>`);html+="</div>"}if(document.getElementById("list"))list.innerHTML=html}
 function renderBuilder(){let allEffects=[...new Set(Object.values(R).flat())].sort(),effectsEl=document.getElementById("effects");if(!effectsEl)return;effectsEl.innerHTML=allEffects.map(e=>`<label class=effectItem><input type=checkbox ${selectedEffects.includes(e)?"checked":""} onchange="toggleEffect('${esc(e)}')"> ${e}</label>`).join("");let matches=ALL.filter(c=>{let sh=common(c);return selectedEffects.length&&selectedEffects.every(e=>sh.includes(e))}).slice(0,80);recipes.innerHTML=selectedEffects.length?matches.map(c=>`<div class=pill>${c.join(" + ")}</div>`).join("")||"Aldren found no matching mixture. Try fewer effects.":"Pick an effect above."}
