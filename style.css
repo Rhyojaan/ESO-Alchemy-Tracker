@@ -1,0 +1,66 @@
+/* The Alchemist - Shared Styles
+   Release 5.2.1 Project Restructure
+   This is the first external stylesheet.
+*/
+
+:root{
+  --bg:#1f1b18;
+  --panel:#2b241f;
+  --panel2:#332a24;
+  --text:#f2e6c9;
+  --muted:#c8b78c;
+  --gold:#c8a45a;
+  --border:#5c4931;
+  --accent:#8a6b35;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Segoe UI,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:var(--panel);
+  border-bottom:2px solid var(--border);
+  padding:18px 24px;
+}
+h1,h2,h3{margin:0 0 10px}
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  margin:14px 0;
+}
+button{
+  background:var(--accent);
+  color:white;
+  border:none;
+  border-radius:6px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+button:hover{filter:brightness(1.08)}
+input,select{
+  background:var(--panel2);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:8px;
+}
+.small{color:var(--muted);font-size:.9rem}
+.notice{
+  background:var(--panel2);
+  border-left:4px solid var(--gold);
+  padding:10px;
+  border-radius:6px;
+}
+.pill{
+  display:inline-block;
+  padding:4px 8px;
+  margin:4px;
+  border:1px solid var(--border);
+  border-radius:999px;
+}
