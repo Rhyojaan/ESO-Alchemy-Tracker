@@ -1,39 +1,252 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ESO Alchemy Tracker V3.1</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESO Alchemy Tracker V3.5</title>
 <style>
-:root{--bg:#0d0a06;--panel:#1c140c;--panel2:#261b10;--gold:#d9aa49;--gold2:#8b642a;--text:#f7ead0;--muted:#c8b58a;--green:#67b26f;--yellow:#d1a642;--red:#b85c50}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#2a1c0d 0,#0d0a06 55%);color:var(--text);font-family:Arial,system-ui,sans-serif;font-size:18px}
-header{position:sticky;top:0;z-index:5;background:#151008ee;border-bottom:2px solid var(--gold2);padding:18px 16px}
-h1{margin:0;color:var(--gold);font-size:34px}h2{color:var(--gold);margin:0 0 12px;font-size:26px}h3{margin:0 0 10px;color:#ffe0a0;font-size:23px}
-.wrap{max-width:1200px;margin:auto;padding:16px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold2);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 10px 24px #0008}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px}.topgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.stat{font-size:32px;color:var(--gold);font-weight:800}.small{color:var(--muted);font-size:15px}
-input,button,select{background:#0d0905;color:var(--text);border:1px solid var(--gold2);border-radius:11px;padding:12px;font-size:18px}
-button{cursor:pointer;color:#ffdc8c;font-weight:800;background:linear-gradient(#4c3518,#281b0c)}button.secondary{background:#130e08;color:var(--muted)}button.danger{border-color:#8c3d35;color:#ffd0c9}
-.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.controls input{min-width:300px;flex:1}
-.bar{height:18px;background:#090704;border-radius:999px;overflow:hidden;border:1px solid var(--gold2)}.fill{height:100%;background:linear-gradient(90deg,#8d6727,#e6bd5a);width:0}
-.trait{display:flex;gap:10px;align-items:center;margin:9px 0;padding:6px;border-radius:8px}.trait input{width:24px;height:24px}
-.recipe{font-size:21px;line-height:1.55}.pill{display:inline-block;border:1px solid var(--gold2);border-radius:999px;padding:5px 10px;margin:3px;color:var(--muted);font-size:15px}
-.done{border-color:var(--green)}.partial{border-color:var(--yellow)}.none{border-color:var(--red)}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.qty{width:90px;text-align:center}.badge{font-size:14px;border-radius:999px;padding:5px 9px;border:1px solid var(--gold2);color:var(--muted)}
-@media(max-width:650px){body{font-size:16px}h1{font-size:26px}.controls>*{width:100%}.controls input{min-width:0}}
-</style></head><body>
-<header><h1>ESO Alchemy Tracker V3.1</h1><div class="small">Bigger text • cleaner layout • inventory counts • smarter next craft • saves automatically</div></header>
+:root{
+  --bg:#0c0804;--panel:#1b130b;--panel2:#281c10;--gold:#d9aa49;--gold2:#8b642a;
+  --text:#f7ead0;--muted:#c8b58a;--green:#69b872;--yellow:#d4a744;--red:#b95a50;--blue:#6aa7d9;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:radial-gradient(circle at top,#2c1c0c 0,#0c0804 58%);
+  color:var(--text);font-family:Arial,system-ui,sans-serif;font-size:18px;
+}
+header{
+  position:sticky;top:0;z-index:10;background:#130d07ee;border-bottom:2px solid var(--gold2);
+  padding:16px 18px;backdrop-filter:blur(6px)
+}
+h1{margin:0;color:var(--gold);font-size:34px}
+h2{color:var(--gold);margin:0 0 12px;font-size:26px}
+h3{margin:0 0 10px;color:#ffe0a0;font-size:22px}
+.wrap{max-width:1250px;margin:auto;padding:16px}
+.card{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--gold2);
+  border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 10px 24px #0008
+}
+.topgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.stat{font-size:34px;color:var(--gold);font-weight:900}
+.small{color:var(--muted);font-size:15px}
+input,button,select{
+  background:#0d0905;color:var(--text);border:1px solid var(--gold2);border-radius:11px;
+  padding:12px;font-size:18px
+}
+button{cursor:pointer;color:#ffdc8c;font-weight:800;background:linear-gradient(#4c3518,#281b0c)}
+button:hover{filter:brightness(1.14)}
+button.secondary{background:#130e08;color:var(--muted)}
+button.danger{border-color:#8c3d35;color:#ffd0c9}
+button.good{border-color:#468a4b;color:#d8ffd9}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.controls input{min-width:300px;flex:1}
+.bar{height:18px;background:#090704;border-radius:999px;overflow:hidden;border:1px solid var(--gold2)}
+.fill{height:100%;background:linear-gradient(90deg,#8d6727,#e6bd5a);width:0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.recipe{font-size:21px;line-height:1.55}
+.pill{display:inline-block;border:1px solid var(--gold2);border-radius:999px;padding:5px 10px;margin:3px;color:var(--muted);font-size:15px}
+.trait{display:flex;gap:10px;align-items:center;margin:8px 0;padding:6px;border-radius:8px}
+.trait input{width:24px;height:24px}
+.done{border-color:var(--green)}.partial{border-color:var(--yellow)}.none{border-color:var(--red)}.fav{box-shadow:0 0 0 2px #d9aa4933}
+.qty{width:75px;text-align:center}
+.qtyBtns{display:flex;gap:6px;flex-wrap:wrap}.qtyBtns button{padding:7px 9px;font-size:15px}
+.badge{font-size:14px;border-radius:999px;padding:5px 9px;border:1px solid var(--gold2);color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tab.active{outline:2px solid var(--gold);color:#fff}
+.panel{display:none}.panel.active{display:block}
+.advisor{border-left:5px solid var(--gold);font-size:20px}
+.effectList{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.effectItem{border:1px solid var(--gold2);border-radius:10px;padding:8px;background:#100b06}
+.bigmode body{}
+.playing .card{padding:24px}.playing button,.playing input,.playing select{font-size:22px;padding:15px}.playing body{font-size:22px}
+mark{background:#5c4117;color:#ffe7aa;border-radius:4px;padding:1px 4px}
+@media(max-width:700px){
+ body{font-size:16px}h1{font-size:26px}.controls>*{width:100%}.controls input{min-width:0}
+ .row{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>ESO Alchemy Tracker V3.5</h1>
+  <div class="small">The Alchemist • smart advisor • inventory buttons • potion builder • favorites • auto-save</div>
+</header>
+
 <div class="wrap">
-<div class="topgrid"><div class="card"><div class="small">Traits Learned</div><div id="traitStat" class="stat">0/0</div></div><div class="card"><div class="small">Ingredients Complete</div><div id="ingStat" class="stat">0/0</div></div><div class="card"><div class="small">Total Ingredients Owned</div><div id="ownedStat" class="stat">0</div></div></div>
-<div class="card"><div class="row"><b>Overall Progress</b><b id="pct">0%</b></div><div class="bar"><div id="fill" class="fill"></div></div></div>
-<div class="card"><h2>Best Next Craft</h2><div id="best" class="recipe"></div><div class="controls" style="margin-top:12px"><button onclick="markBest()">I crafted this — mark learned</button><button class="secondary" onclick="inventoryOnly=!inventoryOnly;render()">Inventory-only: <span id="invMode">OFF</span></button></div></div>
-<div class="card"><div class="controls"><input id="search" placeholder="Search ingredient or trait..." oninput="render()"><select id="filter" onchange="render()"><option value="all">Show all</option><option value="incomplete">Only incomplete</option><option value="complete">Only complete</option><option value="owned">Only ingredients I own</option></select><button onclick="exportSave()">Export Save</button><button onclick="importSave()">Import Save</button><button class="danger" onclick="resetAll()">Reset</button></div></div>
-<div id="list" class="grid"></div></div>
+<div class="topgrid">
+  <div class="card"><div class="small">Traits Learned</div><div id="traitStat" class="stat">0/0</div></div>
+  <div class="card"><div class="small">Ingredients Complete</div><div id="ingStat" class="stat">0/0</div></div>
+  <div class="card"><div class="small">Total Ingredients Owned</div><div id="ownedStat" class="stat">0</div></div>
+  <div class="card"><div class="small">Useful Crafts Found</div><div id="craftStat" class="stat">0</div></div>
+</div>
+
+<div class="card">
+  <div class="row"><b>Overall Progress</b><b id="pct">0%</b></div>
+  <div class="bar"><div id="fill" class="fill"></div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('advisor',this)">Advisor</button>
+  <button class="tab" onclick="showTab('ingredients',this)">Ingredients</button>
+  <button class="tab" onclick="showTab('builder',this)">Potion Builder</button>
+  <button class="tab" onclick="showTab('saves',this)">Saves</button>
+</div>
+
+<section id="advisor" class="panel active">
+  <div class="card advisor">
+    <h2>Alchemist Advisor</h2>
+    <div id="advisorText" class="recipe"></div>
+    <div class="controls" style="margin-top:12px">
+      <button class="good" onclick="markBest()">Crafted it — mark learned</button>
+      <button class="secondary" onclick="inventoryOnly=!inventoryOnly;render()">Inventory-only: <span id="invMode">OFF</span></button>
+      <button class="secondary" onclick="togglePlayMode()">I'm Playing ESO Mode</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Next 5 Suggested Crafts</h2>
+    <div id="nextFive"></div>
+  </div>
+</section>
+
+<section id="ingredients" class="panel">
+  <div class="card">
+    <div class="controls">
+      <input id="search" placeholder="Search ingredient or trait..." oninput="render()">
+      <select id="filter" onchange="render()">
+        <option value="all">Show all</option>
+        <option value="favorites">Favorites only</option>
+        <option value="incomplete">Only incomplete</option>
+        <option value="complete">Only complete</option>
+        <option value="owned">Only ingredients I own</option>
+      </select>
+      <button onclick="markOwnedFirstTrait()">Mark first trait for owned</button>
+    </div>
+  </div>
+  <div id="list" class="grid"></div>
+</section>
+
+<section id="builder" class="panel">
+  <div class="card">
+    <h2>Potion / Poison Builder</h2>
+    <p class="small">Pick one or more effects. The builder shows ingredient combinations that share those effects.</p>
+    <div id="effects" class="effectList"></div>
+  </div>
+  <div class="card">
+    <h2>Matching Recipes</h2>
+    <div id="recipes"></div>
+  </div>
+</section>
+
+<section id="saves" class="panel">
+  <div class="card">
+    <h2>Save Tools</h2>
+    <div class="controls">
+      <button onclick="exportSave()">Export Save</button>
+      <button onclick="importSave()">Import Save</button>
+      <button class="danger" onclick="resetAll()">Reset Everything</button>
+    </div>
+    <p class="small">Progress saves automatically in this browser. Export is only for backup or moving to another computer.</p>
+  </div>
+</section>
+</div>
+
 <script>
-const R={"Blessed Thistle":["Restore Stamina","Increase Weapon Power","Ravage Health","Speed"],"Blue Entoloma":["Ravage Magicka","Cowardice","Restore Health","Invisibility"],"Bugloss":["Increase Spell Resistance","Cowardice","Restore Health","Restore Magicka"],"Butterfly Wing":["Restore Health","Lingering Health","Vitality","Restore Stamina"],"Chaurus Egg":["Ravage Magicka","Timidity","Restore Stamina","Detection"],"Clam Gall":["Increase Spell Resistance","Hindrance","Vulnerability","Defile"],"Columbine":["Restore Health","Restore Magicka","Restore Stamina","Unstoppable"],"Corn Flower":["Restore Magicka","Increase Spell Power","Ravage Health","Detection"],"Crimson Nirnroot":["Timidity","Spell Critical","Gradual Ravage Health","Restore Health"],"Dragon's Bile":["Heroism","Vulnerability","Invisible","Vitality"],"Dragon's Blood":["Restore Stamina","Heroism","Defile","Lingering Health"],"Dragon Rheum":["Restore Magicka","Heroism","Speed","Vitality"],"Dragonthorn":["Restore Stamina","Increase Weapon Power","Weapon Critical","Fracture"],"Emetic Russula":["Ravage Health","Ravage Magicka","Ravage Stamina","Stun"],"Fleshfly Larva":["Ravage Stamina","Vulnerability","Vitality","Protection"],"Imp Stool":["Ravage Stamina","Increase Armor","Maim","Enervation"],"Lady's Smock":["Restore Magicka","Increase Spell Power","Spell Critical","Breach"],"Luminous Russula":["Ravage Stamina","Maim","Restore Health","Cowardice"],"Mountain Flower":["Increase Armor","Maim","Restore Health","Restore Stamina"],"Mudcrab Chitin":["Increase Spell Resistance","Increase Armor","Protection","Defile"],"Namira's Rot":["Spell Critical","Speed","Unstoppable","Invisible"],"Nightshade":["Ravage Health","Protection","Gradual Ravage Health","Defile"],"Nirnroot":["Ravage Health","Unstoppable","Invisible","Critical Health"],"Powdered Mother of Pearl":["Lingering Health","Speed","Vitality","Protection"],"Scrib Jelly":["Ravage Magicka","Vulnerability","Speed","Lingering Health"],"Spider Egg":["Hindrance","Invisible","Lingering Health","Defile"],"Stinkhorn":["Ravage Health","Ravage Stamina","Increase Weapon Power","Fracture"],"Torchbug Thorax":["Fracture","Enervation","Detection","Vitality"],"Vile Coagulant":["Ravage Health","Protection","Vitality","Heroism"],"Violet Coprinus":["Ravage Health","Ravage Magicka","Breach","Increase Spell Power"],"Water Hyacinth":["Restore Health","Weapon Critical","Spell Critical","Enervation"],"White Cap":["Ravage Magicka","Increase Spell Resistance","Breach","Detection"],"Wormwood":["Weapon Critical","Detection","Unstoppable","Hindrance"],"Beetle Scuttle":["Increase Armor","Protection","Vitality","Increase Spell Resistance"]};
-let data=JSON.parse(localStorage.eso_v31||"{}"),inventoryOnly=false,best=null;for(const r in R){if(!data[r])data[r]={learned:[false,false,false,false],qty:0}}
-function save(){localStorage.eso_v31=JSON.stringify(data);render()}function common(c){let m={};c.forEach(r=>R[r].forEach(t=>m[t]=(m[t]||0)+1));return Object.keys(m).filter(t=>m[t]>1)}
-function combos(){let a=Object.keys(R),o=[];for(let i=0;i<a.length;i++)for(let j=i+1;j<a.length;j++)for(let k=j+1;k<a.length;k++)o.push([a[i],a[j],a[k]]);return o}const ALL=combos();
-function findBest(){let b=null;for(const c of ALL){if(inventoryOnly&&c.some(r=>Number(data[r].qty||0)<1))continue;let sh=common(c),disc=[];c.forEach(r=>R[r].forEach((t,i)=>{if(sh.includes(t)&&!data[r].learned[i])disc.push([r,t,i])}));let ownedBonus=c.reduce((a,r)=>a+Math.min(Number(data[r].qty||0),3),0)/10;if(disc.length&&(!b||disc.length+ownedBonus>b.score))b={c,sh,disc,score:disc.length+ownedBonus}}return b}
-function esc(s){return s.replaceAll("'","\'")}function render(){let allKnown=0,complete=0,owned=0,total=Object.keys(R).length*4;for(const r in R){let k=data[r].learned.filter(Boolean).length;allKnown+=k;if(k==4)complete++;owned+=Number(data[r].qty||0)}let pc=Math.round(allKnown/total*100);traitStat.textContent=allKnown+"/"+total;ingStat.textContent=complete+"/"+Object.keys(R).length;ownedStat.textContent=owned;pct.textContent=pc+"%";fill.style.width=pc+"%";invMode.textContent=inventoryOnly?"ON":"OFF";best=findBest();best.innerHTML=best?"" : "";document.getElementById("best").innerHTML=best?`<b>${best.c.join(" + ")}</b><br><span class=small>Shared effects: ${best.sh.join(", ")}</span><br><span class=small>Expected discoveries: ${best.disc.length}</span><br>${best.disc.map(d=>`<span class=pill>${d[0]}: ${d[1]}</span>`).join("")}`:"No useful craft found. Try turning inventory-only OFF, or you may be done.";let q=(search.value||"").toLowerCase(),f=filter.value,html="";for(const r of Object.keys(R).sort()){let k=data[r].learned.filter(Boolean).length,hay=(r+" "+R[r].join(" ")).toLowerCase();if(q&&!hay.includes(q))continue;if(f=="complete"&&k<4)continue;if(f=="incomplete"&&k==4)continue;if(f=="owned"&&Number(data[r].qty||0)<1)continue;let cls=k==4?"done":k>0?"partial":"none";html+=`<div class="card ${cls}"><div class=row><h3>${r}</h3><span class=badge>${k}/4</span></div><div class=row><span class=small>Owned</span><input class=qty type=number min=0 value="${data[r].qty||0}" onchange="data['${esc(r)}'].qty=this.value;save()"></div>`;R[r].forEach((t,i)=>html+=`<label class=trait><input type=checkbox ${data[r].learned[i]?"checked":""} onchange="data['${esc(r)}'].learned[${i}]=this.checked;save()"> ${t}</label>`);html+="</div>"}list.innerHTML=html}
+const R={
+"Blessed Thistle":["Restore Stamina","Increase Weapon Power","Ravage Health","Speed"],
+"Blue Entoloma":["Ravage Magicka","Cowardice","Restore Health","Invisibility"],
+"Bugloss":["Increase Spell Resistance","Cowardice","Restore Health","Restore Magicka"],
+"Butterfly Wing":["Restore Health","Lingering Health","Vitality","Restore Stamina"],
+"Chaurus Egg":["Ravage Magicka","Timidity","Restore Stamina","Detection"],
+"Clam Gall":["Increase Spell Resistance","Hindrance","Vulnerability","Defile"],
+"Columbine":["Restore Health","Restore Magicka","Restore Stamina","Unstoppable"],
+"Corn Flower":["Restore Magicka","Increase Spell Power","Ravage Health","Detection"],
+"Crimson Nirnroot":["Timidity","Spell Critical","Gradual Ravage Health","Restore Health"],
+"Dragon's Bile":["Heroism","Vulnerability","Invisible","Vitality"],
+"Dragon's Blood":["Restore Stamina","Heroism","Defile","Lingering Health"],
+"Dragon Rheum":["Restore Magicka","Heroism","Speed","Vitality"],
+"Dragonthorn":["Restore Stamina","Increase Weapon Power","Weapon Critical","Fracture"],
+"Emetic Russula":["Ravage Health","Ravage Magicka","Ravage Stamina","Stun"],
+"Fleshfly Larva":["Ravage Stamina","Vulnerability","Vitality","Protection"],
+"Imp Stool":["Ravage Stamina","Increase Armor","Maim","Enervation"],
+"Lady's Smock":["Restore Magicka","Increase Spell Power","Spell Critical","Breach"],
+"Luminous Russula":["Ravage Stamina","Maim","Restore Health","Cowardice"],
+"Mountain Flower":["Increase Armor","Maim","Restore Health","Restore Stamina"],
+"Mudcrab Chitin":["Increase Spell Resistance","Increase Armor","Protection","Defile"],
+"Namira's Rot":["Spell Critical","Speed","Unstoppable","Invisible"],
+"Nightshade":["Ravage Health","Protection","Gradual Ravage Health","Defile"],
+"Nirnroot":["Ravage Health","Unstoppable","Invisible","Critical Health"],
+"Powdered Mother of Pearl":["Lingering Health","Speed","Vitality","Protection"],
+"Scrib Jelly":["Ravage Magicka","Vulnerability","Speed","Lingering Health"],
+"Spider Egg":["Hindrance","Invisible","Lingering Health","Defile"],
+"Stinkhorn":["Ravage Health","Ravage Stamina","Increase Weapon Power","Fracture"],
+"Torchbug Thorax":["Fracture","Enervation","Detection","Vitality"],
+"Vile Coagulant":["Ravage Health","Protection","Vitality","Heroism"],
+"Violet Coprinus":["Ravage Health","Ravage Magicka","Breach","Increase Spell Power"],
+"Water Hyacinth":["Restore Health","Weapon Critical","Spell Critical","Enervation"],
+"White Cap":["Ravage Magicka","Increase Spell Resistance","Breach","Detection"],
+"Wormwood":["Weapon Critical","Detection","Unstoppable","Hindrance"],
+"Beetle Scuttle":["Increase Armor","Protection","Vitality","Increase Spell Resistance"]
+};
+
+let data=JSON.parse(localStorage.eso_v35||"{}"),inventoryOnly=false,best=null,selectedEffects=[];
+for(const r in R){if(!data[r])data[r]={learned:[false,false,false,false],qty:0,fav:false}}
+
+function save(){localStorage.eso_v35=JSON.stringify(data);render()}
+function common(c){let m={};c.forEach(r=>R[r].forEach(t=>m[t]=(m[t]||0)+1));return Object.keys(m).filter(t=>m[t]>1)}
+function combos(){let a=Object.keys(R),o=[];for(let i=0;i<a.length;i++)for(let j=i+1;j<a.length;j++){o.push([a[i],a[j]]);for(let k=j+1;k<a.length;k++)o.push([a[i],a[j],a[k]])}return o}
+const ALL=combos();
+function scoreCombo(c){
+ if(inventoryOnly&&c.some(r=>Number(data[r].qty||0)<1))return null;
+ let sh=common(c),disc=[];
+ c.forEach(r=>R[r].forEach((t,i)=>{if(sh.includes(t)&&!data[r].learned[i])disc.push([r,t,i])}));
+ if(!disc.length)return null;
+ let ownedBonus=c.reduce((a,r)=>a+Math.min(Number(data[r].qty||0),3),0)/10;
+ let favBonus=c.reduce((a,r)=>a+(data[r].fav?.15:0),0);
+ return {c,sh,disc,score:disc.length+ownedBonus+favBonus}
+}
+function ranked(){return ALL.map(scoreCombo).filter(Boolean).sort((a,b)=>b.score-a.score)}
+function esc(s){return s.replaceAll("'","\\'")}
+function setQty(r,n){data[r].qty=Math.max(0,Number(data[r].qty||0)+n);save()}
+function showTab(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderBuilder()}
+function render(){
+ let allKnown=0,complete=0,owned=0,total=Object.keys(R).length*4;
+ for(const r in R){let k=data[r].learned.filter(Boolean).length;allKnown+=k;if(k==4)complete++;owned+=Number(data[r].qty||0)}
+ let pc=Math.round(allKnown/total*100), ranks=ranked(); best=ranks[0]||null;
+ traitStat.textContent=allKnown+"/"+total; ingStat.textContent=complete+"/"+Object.keys(R).length; ownedStat.textContent=owned; craftStat.textContent=ranks.length;
+ pct.textContent=pc+"%"; fill.style.width=pc+"%"; invMode.textContent=inventoryOnly?"ON":"OFF";
+ advisorText.innerHTML=best?`You own enough knowledge to discover <mark>${best.disc.length}</mark> new traits with:<br><br><b>${best.c.join(" + ")}</b><br><br><span class=small>Shared effects: ${best.sh.join(", ")}</span><br>${best.disc.map(d=>`<span class=pill>${d[0]}: ${d[1]}</span>`).join("")}`:"No useful craft found. Turn inventory-only OFF, add ingredient counts, or you may be done.";
+ nextFive.innerHTML=ranks.slice(0,5).map((x,i)=>`<div class=pill><b>#${i+1}</b> ${x.c.join(" + ")} — ${x.disc.length} discoveries</div>`).join("")||"No suggestions found.";
+ renderIngredients(); renderBuilder();
+}
+function renderIngredients(){
+ let q=(document.getElementById("search")?.value||"").toLowerCase(),f=(document.getElementById("filter")?.value||"all"),html="";
+ for(const r of Object.keys(R).sort((a,b)=>(data[b].fav-data[a].fav)||a.localeCompare(b))){
+  let k=data[r].learned.filter(Boolean).length,hay=(r+" "+R[r].join(" ")).toLowerCase();
+  if(q&&!hay.includes(q))continue;if(f=="favorites"&&!data[r].fav)continue;if(f=="complete"&&k<4)continue;if(f=="incomplete"&&k==4)continue;if(f=="owned"&&Number(data[r].qty||0)<1)continue;
+  let cls=k==4?"done":k>0?"partial":"none"; if(data[r].fav)cls+=" fav";
+  html+=`<div class="card ${cls}"><div class=row><h3>${data[r].fav?"⭐ ":""}${r}</h3><span class=badge>${k}/4</span></div>
+  <div class=row><span class=small>Owned</span><input class=qty type=number min=0 value="${data[r].qty||0}" onchange="data['${esc(r)}'].qty=this.value;save()"></div>
+  <div class=qtyBtns><button onclick="setQty('${esc(r)}',1)">+1</button><button onclick="setQty('${esc(r)}',5)">+5</button><button onclick="setQty('${esc(r)}',-1)">-1</button><button onclick="data['${esc(r)}'].fav=!data['${esc(r)}'].fav;save()">⭐</button></div>`;
+  R[r].forEach((t,i)=>html+=`<label class=trait><input type=checkbox ${data[r].learned[i]?"checked":""} onchange="data['${esc(r)}'].learned[${i}]=this.checked;save()"> ${t}</label>`);
+  html+="</div>";
+ }
+ if(document.getElementById("list"))list.innerHTML=html;
+}
+function renderBuilder(){
+ let allEffects=[...new Set(Object.values(R).flat())].sort(), effectsEl=document.getElementById("effects"); if(!effectsEl)return;
+ effectsEl.innerHTML=allEffects.map(e=>`<label class=effectItem><input type=checkbox ${selectedEffects.includes(e)?"checked":""} onchange="toggleEffect('${esc(e)}')"> ${e}</label>`).join("");
+ let matches=ALL.filter(c=>{let sh=common(c);return selectedEffects.length&&selectedEffects.every(e=>sh.includes(e))}).slice(0,60);
+ recipes.innerHTML=selectedEffects.length?matches.map(c=>`<div class=pill>${c.join(" + ")}</div>`).join("")||"No matching recipe found. Try fewer effects.":"Pick an effect above.";
+}
+function toggleEffect(e){selectedEffects=selectedEffects.includes(e)?selectedEffects.filter(x=>x!==e):selectedEffects.concat(e);renderBuilder()}
 function markBest(){if(!best)return;best.disc.forEach(d=>data[d[0]].learned[d[2]]=true);best.c.forEach(r=>data[r].qty=Math.max(0,Number(data[r].qty||0)-1));save()}
-function exportSave(){prompt("Copy this save text:",JSON.stringify(data))}function importSave(){let x=prompt("Paste save text:");if(x){data=JSON.parse(x);save()}}function resetAll(){if(confirm("Reset all saved progress?")){localStorage.removeItem("eso_v31");location.reload()}}render();
-</script></body></html>
+function markOwnedFirstTrait(){for(const r in R){if(Number(data[r].qty||0)>0)data[r].learned[0]=true}save()}
+function exportSave(){prompt("Copy this save text:",JSON.stringify(data))}
+function importSave(){let x=prompt("Paste save text:");if(x){data=JSON.parse(x);save()}}
+function resetAll(){if(confirm("Reset all saved progress?")){localStorage.removeItem("eso_v35");location.reload()}}
+function togglePlayMode(){document.documentElement.classList.toggle("playing")}
+render();
+</script>
+</body>
+</html>
