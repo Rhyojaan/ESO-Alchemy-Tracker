@@ -1,0 +1,78 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESO Alchemy Tracker V3</title>
+<style>
+body{margin:0;background:#140f09;color:#f5e8c7;font-family:Arial,system-ui,sans-serif}
+header{padding:16px;background:#21170e;border-bottom:2px solid #b88935;position:sticky;top:0}
+h1{margin:0;color:#e6c16a}.wrap{max-width:1100px;margin:auto;padding:16px}
+.card{background:#231a11;border:1px solid #8f6b2d;border-radius:12px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+input,button,select{background:#0f0b07;color:#f5e8c7;border:1px solid #8f6b2d;border-radius:8px;padding:9px}
+button{cursor:pointer;color:#ffd98a;font-weight:bold}.bar{height:14px;background:#0b0805;border-radius:99px;overflow:hidden;border:1px solid #8f6b2d}.fill{height:100%;background:#d2a84a;width:0}
+.trait{display:block;margin:7px 0}.small{color:#cdbb8a;font-size:13px}.recipe{font-size:19px;line-height:1.5}
+</style></head><body>
+<header><h1>ESO Alchemy Tracker V3</h1><div class="small">Simple single-file version • saves automatically</div></header>
+<div class="wrap">
+<div class="card"><b>Progress:</b> <span id="prog"></span><div class="bar"><div id="fill" class="fill"></div></div></div>
+<div class="card"><h2>Best Next Craft</h2><div id="best" class="recipe"></div><button onclick="markBest()">I crafted this — mark learned</button></div>
+<div class="card"><input id="search" placeholder="Search ingredient or trait..." oninput="render()"> <button onclick="exportSave()">Export Save</button> <button onclick="importSave()">Import Save</button> <button onclick="resetAll()">Reset</button></div>
+<div id="list" class="grid"></div>
+</div>
+<script>
+const R={
+"Blessed Thistle":["Restore Stamina","Increase Weapon Power","Ravage Health","Speed"],
+"Blue Entoloma":["Ravage Magicka","Cowardice","Restore Health","Invisibility"],
+"Bugloss":["Increase Spell Resistance","Cowardice","Restore Health","Restore Magicka"],
+"Butterfly Wing":["Restore Health","Lingering Health","Vitality","Restore Stamina"],
+"Chaurus Egg":["Ravage Magicka","Timidity","Restore Stamina","Detection"],
+"Clam Gall":["Increase Spell Resistance","Hindrance","Vulnerability","Defile"],
+"Columbine":["Restore Health","Restore Magicka","Restore Stamina","Unstoppable"],
+"Corn Flower":["Restore Magicka","Increase Spell Power","Ravage Health","Detection"],
+"Crimson Nirnroot":["Timidity","Spell Critical","Gradual Ravage Health","Restore Health"],
+"Dragon's Bile":["Heroism","Vulnerability","Invisible","Vitality"],
+"Dragon's Blood":["Restore Stamina","Heroism","Defile","Lingering Health"],
+"Dragon Rheum":["Restore Magicka","Heroism","Speed","Vitality"],
+"Dragonthorn":["Restore Stamina","Increase Weapon Power","Weapon Critical","Fracture"],
+"Emetic Russula":["Ravage Health","Ravage Magicka","Ravage Stamina","Stun"],
+"Fleshfly Larva":["Ravage Stamina","Vulnerability","Vitality","Protection"],
+"Imp Stool":["Ravage Stamina","Increase Armor","Maim","Enervation"],
+"Lady's Smock":["Restore Magicka","Increase Spell Power","Spell Critical","Breach"],
+"Luminous Russula":["Ravage Stamina","Maim","Restore Health","Cowardice"],
+"Mountain Flower":["Increase Armor","Maim","Restore Health","Restore Stamina"],
+"Mudcrab Chitin":["Increase Spell Resistance","Increase Armor","Protection","Defile"],
+"Namira's Rot":["Spell Critical","Speed","Unstoppable","Invisible"],
+"Nightshade":["Ravage Health","Protection","Gradual Ravage Health","Defile"],
+"Nirnroot":["Ravage Health","Unstoppable","Invisible","Critical Health"],
+"Powdered Mother of Pearl":["Lingering Health","Speed","Vitality","Protection"],
+"Scrib Jelly":["Ravage Magicka","Vulnerability","Speed","Lingering Health"],
+"Spider Egg":["Hindrance","Invisible","Lingering Health","Defile"],
+"Stinkhorn":["Ravage Health","Ravage Stamina","Increase Weapon Power","Fracture"],
+"Torchbug Thorax":["Fracture","Enervation","Detection","Vitality"],
+"Vile Coagulant":["Ravage Health","Protection","Vitality","Heroism"],
+"Violet Coprinus":["Ravage Health","Ravage Magicka","Breach","Increase Spell Power"],
+"Water Hyacinth":["Restore Health","Weapon Critical","Spell Critical","Enervation"],
+"White Cap":["Ravage Magicka","Increase Spell Resistance","Breach","Detection"],
+"Wormwood":["Weapon Critical","Detection","Unstoppable","Hindrance"],
+"Beetle Scuttle":["Increase Armor","Protection","Vitality","Increase Spell Resistance"]
+};
+let S=JSON.parse(localStorage.eso_v3_simple||"{}"), best=null;
+for(const r in R){if(!S[r])S[r]=[false,false,false,false]}
+function save(){localStorage.eso_v3_simple=JSON.stringify(S);render()}
+function common(c){let m={};c.forEach(r=>R[r].forEach(t=>m[t]=(m[t]||0)+1));return Object.keys(m).filter(t=>m[t]>1)}
+function combos(){let a=Object.keys(R),o=[];for(let i=0;i<a.length;i++)for(let j=i+1;j<a.length;j++)for(let k=j+1;k<a.length;k++)o.push([a[i],a[j],a[k]]);return o}
+function findBest(){let b=null;for(const c of combos()){let sh=common(c),disc=[];c.forEach(r=>R[r].forEach((t,i)=>{if(sh.includes(t)&&!S[r][i])disc.push([r,t,i])}));if(disc.length&&(!b||disc.length>b.disc.length))b={c,sh,disc}}return b}
+function render(){let known=0,total=0,q=(document.getElementById("search").value||"").toLowerCase(),html="";
+for(const r of Object.keys(R).sort()){let hay=(r+" "+R[r].join(" ")).toLowerCase(); if(q&&!hay.includes(q))continue;
+let k=S[r].filter(Boolean).length; known+=k; total+=4; html+=`<div class=card><h3>${r} <span class=small>${k}/4</span></h3>`;
+R[r].forEach((t,i)=>html+=`<label class=trait><input type=checkbox ${S[r][i]?"checked":""} onchange="S['${r.replaceAll("'","\\'")}'][${i}]=this.checked;save()"> ${t}</label>`);
+html+="</div>"} document.getElementById("list").innerHTML=html;
+let allKnown=Object.values(S).flat().filter(Boolean).length, allTotal=Object.keys(R).length*4, pct=Math.round(allKnown/allTotal*100);
+document.getElementById("prog").textContent=`${allKnown}/${allTotal} traits (${pct}%)`; document.getElementById("fill").style.width=pct+"%";
+best=findBest(); document.getElementById("best").innerHTML=best?`<b>${best.c.join(" + ")}</b><br><span class=small>Expected discoveries: ${best.disc.length}</span><br>${best.disc.map(d=>d[0]+": "+d[1]).join("<br>")}`:"All done or no useful craft found.";
+}
+function markBest(){if(!best)return;best.disc.forEach(d=>S[d[0]][d[2]]=true);save()}
+function exportSave(){prompt("Copy this save text:",JSON.stringify(S))}
+function importSave(){let x=prompt("Paste save text:");if(x){S=JSON.parse(x);save()}}
+function resetAll(){if(confirm("Reset everything?")){localStorage.removeItem("eso_v3_simple");location.reload()}}
+render();
+</script></body></html>
