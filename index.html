@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Alchemist 5.3</title>
+<title>The Alchemist 5.4</title>
 <style>
 :root{--bg:#090603;--panel:#1b130b;--panel2:#2b1e11;--gold:#ddb04e;--gold2:#8b642a;--text:#f8ecd2;--muted:#cbb98d;--green:#6fc77a;--yellow:#d7aa47;--red:#bd5d53}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#2f1f0e 0,#090603 60%);color:var(--text);font-family:Arial,system-ui,sans-serif;font-size:18px}
@@ -24,12 +24,12 @@ button{cursor:pointer;color:#ffdc8c;font-weight:800;background:linear-gradient(#
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab.active{outline:2px solid var(--gold);color:#fff}.panel{display:none}.panel.active{display:block}.advisor{border-left:5px solid var(--gold)}
 .effectList{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:8px}.effectItem{border:1px solid var(--gold2);border-radius:10px;padding:9px;background:#100b06}.solventGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.recipeLine{display:block;border:1px solid var(--gold2);border-radius:10px;padding:10px;margin:8px 0;background:#100b06}
 .planStep{border:1px solid var(--gold2);border-radius:12px;padding:12px;margin:8px 0;background:#110c07}
-mark{background:#5c4117;color:#ffe7aa;border-radius:4px;padding:1px 5px}.notice{border:1px solid #6e8d4c;background:#14200f;border-radius:12px;padding:12px;margin-top:10px;color:#dfffd2}
+mark{background:#5c4117;color:#ffe7aa;border-radius:4px;padding:1px 5px}.notice{border:1px solid var(--gold2);background:#100b06;border-radius:12px;padding:12px;margin-top:10px;color:var(--text)}
 body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,body.playing input,body.playing select{font-size:22px;padding:15px}body.playing h1{font-size:40px}
 .titlecard{text-align:center;padding:28px}.quote{font-style:italic;color:#edd28d;font-size:20px}
 @media(max-width:700px){body{font-size:16px}h1{font-size:26px}.controls>*{width:100%}.controls input{min-width:0}.row{align-items:flex-start;flex-direction:column}}
 </style></head>
-<body><header><h1>⚗️ The Alchemist</h1><div class="small">Release 5.3 — The Laboratory • Aldren the Archivist</div></header>
+<body><header><h1>⚗️ The Alchemist</h1><div class="small">Release 5.4 — The Archivist • Aldren the Archivist</div></header>
 <div class="wrap">
 <div id="setup" class="card titlecard" style="display:none">
 <h1>⚗️ The Alchemist</h1><p class="quote">“Knowledge, once recorded, is never truly lost.”</p><p class="small">— Aldren the Archivist</p>
@@ -45,9 +45,13 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
     <h2>Inventory Report</h2>
     <div id="aldrenInventoryAlert" class="recipe"></div>
   </div>
+  <div class="card advisor">
+    <h2>Field Note</h2>
+    <div id="fieldNote" class="recipe"></div>
+  </div>
 </section>
 <section id="plan" class="panel"><div class="card"><h2>Completion Plan</h2><p class="small">Aldren calculates a practical path from your current archive.</p><div class="controls"><button onclick="buildPlan()">Calculate Plan</button><button class="secondary" onclick="inventoryOnly=!inventoryOnly;buildPlan();render()">Craftable-only: <span id="invMode2">OFF</span></button></div><div id="planSummary" class="notice">Click Calculate Plan.</div><div id="planList"></div></div></section>
-<section id="ingredients" class="panel"><div class="card"><div class="controls"><input id="search" placeholder="Search reagent or trait..." oninput="render()"><select id="filter" onchange="render()"><option value="all">Show all</option><option value="favorites">Favorites only</option><option value="incomplete">Only incomplete</option><option value="complete">Only complete</option><option value="owned">Only reagents I own</option></select><button onclick="markOwnedFirstTrait()">Mark first trait for owned</button></div></div><h2 style="margin-top:18px">Solvents</h2><p class="small">Track potion waters and poison solvents here. The Laboratory uses these counts when checking craftability.</p><div id="solventList" class="solventGrid"></div><h2 style="margin-top:18px">Reagent Ledger</h2><div id="list" class="grid"></div></section>
+<section id="ingredients" class="panel"><div class="card"><div class="controls"><input id="search" placeholder="Search reagent or trait..." oninput="render()"><select id="filter" onchange="render()"><option value="all">Show all</option><option value="favorites">Favorites only</option><option value="incomplete">Only incomplete</option><option value="complete">Only complete</option><option value="owned">Only reagents I own</option><option value="low">Only below reserve</option></select><button onclick="markOwnedFirstTrait()">Mark first trait for owned</button></div></div><h2 style="margin-top:18px">Solvents</h2><p class="small">Track potion waters and poison solvents here. The Laboratory uses these counts when checking craftability.</p><div id="solventList" class="solventGrid"></div><h2 style="margin-top:18px">Reagent Ledger</h2><div id="list" class="grid"></div></section>
 <section id="builder" class="panel"><div class="card"><h2>Laboratory</h2><p class="small">Pick one or more effects. Aldren lists mixtures that share all selected effects.</p><div id="effects" class="effectList"></div></div><div class="card"><h2>Matching Recipes</h2><div id="recipes"></div></div></section>
 <section id="session" class="panel"><div class="card"><h2>Today's Session</h2><div class="topgrid"><div><div class="small">Crafts Recorded</div><div id="sessionCrafts" class="stat">0</div></div><div><div class="small">Traits Learned</div><div id="sessionTraits" class="stat">0</div></div><div><div class="small">Reagents Completed</div><div id="sessionComplete" class="stat">0</div></div></div><div class="controls" style="margin-top:14px"><button class="danger" onclick="resetSession()">Reset Session Stats</button></div></div><div class="card"><h2>Achievements</h2><div id="achievements"></div></div></section>
 
@@ -72,6 +76,31 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
     <div class="pill">Crimson Nirnroot uses Critical</div>
     <div class="pill">Reserve controls stabilized</div>
     <div class="pill">Profile archives separated</div>
+  </div>
+  <div class="card">
+    <h2>Data Audit</h2>
+    <div id="dataAudit" class="recipe"></div>
+  </div>
+  <div class="card">
+    <h2>Correction History</h2>
+    <div class="pill">Spider Egg order corrected</div>
+    <div class="pill">Water Hyacinth slot 3 corrected to Weapon Critical</div>
+    <div class="pill">Crimson Nirnroot uses Critical</div>
+  </div>
+  <div class="card">
+    <h2>Report a Correction</h2>
+    <p class="small">Copy this template and send it with a screenshot if possible.</p>
+    <textarea id="correctionTemplate" style="width:100%;min-height:150px;background:#0d0905;color:var(--text);border:1px solid var(--gold2);border-radius:10px;padding:12px">Correction Report
+
+Reagent:
+Trait slot number:
+App says:
+ESO says:
+Screenshot attached? Yes / No
+Notes:</textarea>
+    <div class="controls" style="margin-top:10px">
+      <button onclick="copyCorrectionTemplate()">Copy Template</button>
+    </div>
   </div>
   <div class="card">
     <h2>Reagent Ledger</h2>
@@ -115,7 +144,7 @@ body.playing{font-size:22px}body.playing .card{padding:24px}body.playing button,
   </div>
 </section>
 
-<section id="saves" class="panel"><div class="card"><h2>Archive Tools</h2><div class="controls"><button onclick="exportSave()">Export Archive</button><button onclick="importSave()">Import Archive</button><button class="danger" onclick="resetAll()">Reset Everything</button></div><p class="small">Progress saves automatically in this browser.</p><div class="notice"><b>Release 5.3 — The Laboratory</b><br>Added potion waters, poison solvents, solvent inventory tracking, craftable-only Aldren recommendations, and a solvent-aware Laboratory.</div></div></section>
+<section id="saves" class="panel"><div class="card"><h2>Archive Tools</h2><div class="controls"><button onclick="exportSave()">Export Archive</button><button onclick="importSave()">Import Archive</button><button class="danger" onclick="resetAll()">Reset Everything</button></div><p class="small">Progress saves automatically in this browser.</p><div class="notice"><b>Release 5.4 — The Archivist</b><br>Removed green note styling, added Aldren Field Notes, added correction report template, added data audit, and added low-reserve reagent filtering.</div></div></section>
 </div></div>
 <script>
 const R={"Beetle Scuttle":["Breach","Increase Armor","Protection","Vitality"],"Blessed Thistle":["Restore Stamina","Increase Weapon Power","Ravage Health","Speed"],"Blue Entoloma":["Ravage Magicka","Cowardice","Restore Health","Invisible"],"Bugloss":["Increase Spell Resist","Restore Health","Cowardice","Restore Magicka"],"Butterfly Wing":["Restore Health","Uncertainty","Lingering Health","Vitality"],"Chaurus Egg":["Timidity","Ravage Magicka","Restore Stamina","Detection"],"Clam Gall":["Increase Spell Resist","Hindrance","Vulnerability","Defile"],"Columbine":["Restore Health","Restore Magicka","Restore Stamina","Unstoppable"],"Corn Flower":["Restore Magicka","Increase Spell Power","Ravage Health","Detection"],"Crimson Nirnroot":["Timidity","Critical","Gradual Ravage Health","Restore Health"],"Dragon's Bile":["Heroism","Vulnerability","Invisible","Vitality"],"Dragon's Blood":["Lingering Health","Restore Stamina","Heroism","Defile"],"Dragon Rheum":["Restore Magicka","Heroism","Enervation","Speed"],"Dragonthorn":["Increase Weapon Power","Restore Stamina","Fracture","Critical"],"Emetic Russula":["Ravage Health","Ravage Magicka","Ravage Stamina","Entrapment"],"Fleshfly Larva":["Ravage Stamina","Gradual Ravage Health","Vulnerability","Vitality"],"Imp Stool":["Maim","Ravage Stamina","Increase Armor","Enervation"],"Lady's Smock":["Increase Spell Power","Restore Magicka","Breach","Critical"],"Luminous Russula":["Ravage Stamina","Maim","Restore Health","Hindrance"],"Mountain Flower":["Increase Armor","Restore Health","Maim","Restore Stamina"],"Mudcrab Chitin":["Increase Spell Resist","Protection","Increase Armor","Defile"],"Namira's Rot":["Critical","Speed","Invisible","Unstoppable"],"Nightshade":["Ravage Health","Gradual Ravage Health","Protection","Defile"],"Nirnroot":["Ravage Health","Uncertainty","Enervation","Invisible"],"Powdered Mother of Pearl":["Lingering Health","Speed","Vitality","Protection"],"Scrib Jelly":["Ravage Magicka","Vulnerability","Speed","Lingering Health"],"Spider Egg":["Hindrance","Invisible","Lingering Health","Defile"],"Stinkhorn":["Fracture","Ravage Health","Increase Weapon Power","Ravage Stamina"],"Torchbug Thorax":["Fracture","Enervation","Detection","Vitality"],"Vile Coagulant":["Timidity","Ravage Health","Restore Magicka","Protection"],"Violet Coprinus":["Breach","Ravage Health","Increase Spell Power","Ravage Magicka"],"Water Hyacinth":["Restore Health","Critical","Weapon Critical","Entrapment"],"White Cap":["Cowardice","Ravage Magicka","Increase Spell Resist","Detection"],"Wormwood":["Critical","Hindrance","Detection","Unstoppable"]};
@@ -126,7 +155,7 @@ function initSolvents(){let s={};POTION_WATERS.concat(POISON_SOLVENTS).forEach(x
 function ensureProfileShape(){let p=profile();if(!p)return;if(!p.solvents)p.solvents=initSolvents();POTION_WATERS.concat(POISON_SOLVENTS).forEach(x=>{if(!p.solvents[x])p.solvents[x]={qty:0,reserve:20}});if(!p.favoriteRecipes)p.favoriteRecipes=[]}
 function solventData(){ensureProfileShape();return profile().solvents}
 function newProfile(name){let d={};for(const r in R)d[r]={learned:[false,false,false,false],qty:0,fav:false,reserve:20};return{id:"p_"+Date.now(),name:name||"Adventurer",created:new Date().toISOString(),lastOpen:new Date().toISOString(),data:d,solvents:initSolvents(),favoriteRecipes:[],session:{crafts:0,traits:0,complete:0},settings:{greeting:"normal"}}}
-function loadArchive(){try{let a=JSON.parse(localStorage.getItem(SAVE_KEY));if(a&&a.profiles&&a.profiles.length)return a}catch(e){}return{version:"5.3",activeProfile:null,profiles:[],created:new Date().toISOString(),lastSaved:null}}
+function loadArchive(){try{let a=JSON.parse(localStorage.getItem(SAVE_KEY));if(a&&a.profiles&&a.profiles.length)return a}catch(e){}return{version:"5.4",activeProfile:null,profiles:[],created:new Date().toISOString(),lastSaved:null}}
 function profile(){return archive.profiles.find(p=>p.id===archive.activeProfile)}function data(){return profile().data}function session(){return profile().session}
 function save(){archive.lastSaved=new Date().toISOString();let p=profile();if(p)p.lastOpen=new Date().toISOString();localStorage.setItem(SAVE_KEY,JSON.stringify(archive));render()}
 function createFirstProfile(){let name=(profileName.value||"Adventurer").trim();let p=newProfile(name);archive.profiles.push(p);archive.activeProfile=p.id;save()}
@@ -192,7 +221,20 @@ function chooseGreeting(name,known,total,low){
 function gatherAdvice(){let theoretical=ALL.map(c=>scoreCombo(c,data(),false)).filter(Boolean).sort((a,b)=>b.score-a.score)[0];if(!theoretical)return "The archives may be complete, or no useful experiment remains.";let missing=theoretical.c.filter(r=>Number(data()[r].qty||0)<1);return `Aldren found no useful discovery you can craft with your current reagents.<br><br><span class=small>To pursue the strongest next experiment, gather:</span><br>${missing.map(x=>`<span class=pill>${x}</span>`).join("")}`;}
 function buildPlan(){let state=cloneState(data()),steps=[],safety=0;while(safety++<80){let r=ranked(state,inventoryOnly)[0];if(!r)break;steps.push(r);applyCraftToState(state,r)}planSummary.innerHTML=steps.length?`Plan found: <b>${steps.length}</b> experiments. Estimated new traits: <b>${steps.reduce((a,s)=>a+s.disc.length,0)}</b>.`:"No useful plan found. Try turning inventory-only OFF.";planList.innerHTML=steps.slice(0,30).map((s,i)=>`<div class=planStep><b>Experiment #${i+1}</b><br>${s.c.join(" + ")}<br><span class=small>${s.disc.length} discoveries: ${s.disc.map(d=>d[1]).join(", ")}</span></div>`).join("")}
 function showTab(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderBuilder()}
-function render(){if(!ensureReady())return;ensureProfileShape();renderProfiles();let d=data(),allKnown=0,complete=0,owned=0,total=Object.keys(R).length*4,low=0;for(const r in R){let k=d[r].learned.filter(Boolean).length;allKnown+=k;if(k==4)complete++;owned+=Number(d[r].qty||0);if(Number(d[r].qty||0)>0&&Number(d[r].qty||0)<Number(d[r].reserve||20))low++}let pc=Math.round(allKnown/total*100),ranks=ranked();best=ranks[0]||null;traitStat.textContent=allKnown+"/"+total;ingStat.textContent=complete+"/"+Object.keys(R).length;ownedStat.textContent=owned;craftStat.textContent=ranks.length;pct.textContent=pc+"%";fill.style.width=pc+"%";remainingText.textContent=(total-allKnown)+" traits remain undocumented.";invMode.textContent=inventoryOnly?"ON":"OFF";if(document.getElementById("invMode2"))invMode2.textContent=inventoryOnly?"ON":"OFF";let p=profile();welcomeLine.textContent="Welcome back, "+p.name+".";greetingBox.textContent=chooseGreeting(p.name,allKnown,total,low);if(document.getElementById("lastSaved"))lastSaved.textContent=archive.lastSaved?"Archive updated: "+new Date(archive.lastSaved).toLocaleString():"";advisorText.innerHTML=best?`Your most useful craftable experiment can reveal <mark>${best.disc.length}</mark> new traits.<br><br><b>${best.c.join(" + ")}</b><br><br><span class=small>Why this recipe? It uses reagents you own and reveals the most new traits Aldren can find right now.</span><br><span class=small>Shared effects: ${best.sh.join(", ")}</span><br>${best.disc.map(d=>`<span class=pill>${d[0]}: ${d[1]}</span>`).join("")}`:gatherAdvice();nextFive.innerHTML=ranks.slice(0,5).map((x,i)=>`<div class=pill><b>#${i+1}</b> ${x.c.join(" + ")} — ${x.disc.length} discoveries</div>`).join("")||"No craftable discoveries found.";renderInventoryAlert();renderIngredients();renderSolvents();renderBuilder();renderSession(allKnown,complete,total);renderVerification()}
+
+function renderFieldNote(allKnown,total,complete,owned,low){
+ let box=document.getElementById("fieldNote");if(!box)return;
+ let pct=Math.round(allKnown/total*100), notes=[];
+ if(allKnown===0)notes.push("The first entry in any archive is the most important. Begin with what you can craft.");
+ if(pct>=100)notes.push("Every known reagent has yielded its secrets. The archive stands complete.");
+ if(pct>=75&&pct<100)notes.push("The archive is nearing completion. A careful final pass will serve us well.");
+ if(complete>0)notes.push(`${complete} reagent${complete===1?" has":"s have"} been fully documented.`);
+ if(low>0)notes.push(`${low} supply reserve${low===1?" is":"s are"} below your preferred limit. Review the Inventory Report when convenient.`);
+ if(owned>0)notes.push("Your satchel contains enough material for Aldren to continue searching for useful experiments.");
+ notes.push("A clean archive is built one accurate entry at a time.");
+ box.textContent=notes[Math.floor(Math.random()*notes.length)];
+}
+function render(){if(!ensureReady())return;ensureProfileShape();renderProfiles();let d=data(),allKnown=0,complete=0,owned=0,total=Object.keys(R).length*4,low=0;for(const r in R){let k=d[r].learned.filter(Boolean).length;allKnown+=k;if(k==4)complete++;owned+=Number(d[r].qty||0);if(Number(d[r].qty||0)>0&&Number(d[r].qty||0)<Number(d[r].reserve||20))low++}let pc=Math.round(allKnown/total*100),ranks=ranked();best=ranks[0]||null;renderFieldNote(allKnown,total,complete,owned,low);traitStat.textContent=allKnown+"/"+total;ingStat.textContent=complete+"/"+Object.keys(R).length;ownedStat.textContent=owned;craftStat.textContent=ranks.length;pct.textContent=pc+"%";fill.style.width=pc+"%";remainingText.textContent=(total-allKnown)+" traits remain undocumented.";invMode.textContent=inventoryOnly?"ON":"OFF";if(document.getElementById("invMode2"))invMode2.textContent=inventoryOnly?"ON":"OFF";let p=profile();welcomeLine.textContent="Welcome back, "+p.name+".";greetingBox.textContent=chooseGreeting(p.name,allKnown,total,low);if(document.getElementById("lastSaved"))lastSaved.textContent=archive.lastSaved?"Archive updated: "+new Date(archive.lastSaved).toLocaleString():"";advisorText.innerHTML=best?`Your most useful craftable experiment can reveal <mark>${best.disc.length}</mark> new traits.<br><br><b>${best.c.join(" + ")}</b><br><br><span class=small>Why this recipe? It uses reagents you own and reveals the most new traits Aldren can find right now.</span><br><span class=small>Shared effects: ${best.sh.join(", ")}</span><br>${best.disc.map(d=>`<span class=pill>${d[0]}: ${d[1]}</span>`).join("")}`:gatherAdvice();nextFive.innerHTML=ranks.slice(0,5).map((x,i)=>`<div class=pill><b>#${i+1}</b> ${x.c.join(" + ")} — ${x.disc.length} discoveries</div>`).join("")||"No craftable discoveries found.";renderInventoryAlert();renderIngredients();renderSolvents();renderBuilder();renderSession(allKnown,complete,total);renderVerification()}
 
 function renderInventoryAlert(){
  let box=document.getElementById("aldrenInventoryAlert");
@@ -217,7 +259,7 @@ function renderInventoryAlert(){
  shown.map(x=>`<span class=pill>${x.fav?"⭐ ":""}${x.name}: ${x.qty}/${x.reserve}</span>`).join("")+
  (lows.length>8?`<br><span class=small>${lows.length-8} more below reserve.</span>`:"");
 }
-function renderIngredients(){let d=data(),q=(document.getElementById("search")?.value||"").toLowerCase(),f=(document.getElementById("filter")?.value||"all"),html="";for(const r of Object.keys(R).sort((a,b)=>(d[b].fav-d[a].fav)||a.localeCompare(b))){let k=d[r].learned.filter(Boolean).length,hay=(r+" "+R[r].join(" ")).toLowerCase();if(q&&!hay.includes(q))continue;if(f=="favorites"&&!d[r].fav)continue;if(f=="complete"&&k<4)continue;if(f=="incomplete"&&k==4)continue;if(f=="owned"&&Number(d[r].qty||0)<1)continue;let cls=k==4?"done":k>0?"partial":"none";if(d[r].fav)cls+=" fav";let low=(Number(d[r].qty||0)>0&&Number(d[r].qty||0)<Number(d[r].reserve||20));html+=`<div class="card ${cls}"><div class=row><h3>${d[r].fav?"⭐ ":""}${r}</h3><span class=badge>${k}/4</span></div><div class=row><span class=small>Owned</span><input class=qty type=number min=0 value="${d[r].qty||0}" onchange="data()['${esc(r)}'].qty=this.value;save()"></div><div class=qtyBtns><button onclick="setQty('${esc(r)}',100)">+100</button><button onclick="setQty('${esc(r)}',10)">+10</button><button onclick="setQty('${esc(r)}',1)">+1</button><button onclick="setQty('${esc(r)}',-1)">-1</button><button onclick="setQty('${esc(r)}',-10)">-10</button><button onclick="setQty('${esc(r)}',-100)">-100</button><button onclick="data()['${esc(r)}'].fav=!data()['${esc(r)}'].fav;save()">⭐</button></div><div class=row><span class=small>Reserve</span><input class=qty type=number min=0 value="${d[r].reserve||20}" onchange="data()['${esc(r)}'].reserve=this.value;save()"></div>`;R[r].forEach((t,i)=>html+=`<label class=trait><input type=checkbox ${d[r].learned[i]?"checked":""} onchange="data()['${esc(r)}'].learned[${i}]=this.checked;save()"> ${t}</label>`);html+="</div>"}if(document.getElementById("list"))list.innerHTML=html}
+function renderIngredients(){let d=data(),q=(document.getElementById("search")?.value||"").toLowerCase(),f=(document.getElementById("filter")?.value||"all"),html="";for(const r of Object.keys(R).sort((a,b)=>(d[b].fav-d[a].fav)||a.localeCompare(b))){let k=d[r].learned.filter(Boolean).length,hay=(r+" "+R[r].join(" ")).toLowerCase();if(q&&!hay.includes(q))continue;if(f=="favorites"&&!d[r].fav)continue;if(f=="complete"&&k<4)continue;if(f=="incomplete"&&k==4)continue;if(f=="owned"&&Number(d[r].qty||0)<1)continue;if(f=="low"&&!(Number(d[r].qty||0)>0&&Number(d[r].qty||0)<Number(d[r].reserve||20)))continue;let cls=k==4?"done":k>0?"partial":"none";if(d[r].fav)cls+=" fav";let low=(Number(d[r].qty||0)>0&&Number(d[r].qty||0)<Number(d[r].reserve||20));html+=`<div class="card ${cls}"><div class=row><h3>${d[r].fav?"⭐ ":""}${r}</h3><span class=badge>${k}/4</span></div><div class=row><span class=small>Owned</span><input class=qty type=number min=0 value="${d[r].qty||0}" onchange="data()['${esc(r)}'].qty=this.value;save()"></div><div class=qtyBtns><button onclick="setQty('${esc(r)}',100)">+100</button><button onclick="setQty('${esc(r)}',10)">+10</button><button onclick="setQty('${esc(r)}',1)">+1</button><button onclick="setQty('${esc(r)}',-1)">-1</button><button onclick="setQty('${esc(r)}',-10)">-10</button><button onclick="setQty('${esc(r)}',-100)">-100</button><button onclick="data()['${esc(r)}'].fav=!data()['${esc(r)}'].fav;save()">⭐</button></div><div class=row><span class=small>Reserve</span><input class=qty type=number min=0 value="${d[r].reserve||20}" onchange="data()['${esc(r)}'].reserve=this.value;save()"></div>`;R[r].forEach((t,i)=>html+=`<label class=trait><input type=checkbox ${d[r].learned[i]?"checked":""} onchange="data()['${esc(r)}'].learned[${i}]=this.checked;save()"> ${t}</label>`);html+="</div>"}if(document.getElementById("list"))list.innerHTML=html}
 
 function setSolventQty(name,n){let s=solventData();s[name].qty=Math.max(0,Number(s[name].qty||0)+n);save()}
 function renderSolvents(){
@@ -254,12 +296,20 @@ function renderBuilder(){
  }).join("")||"Aldren found no matching recipe. Try fewer effects.":"Pick an effect above.";
 }
 function renderVerification(){
- let vr=document.getElementById("verifyReagents"),vt=document.getElementById("verifyTraits"),vl=document.getElementById("verificationList");
+ let vr=document.getElementById("verifyReagents"),vt=document.getElementById("verifyTraits"),vl=document.getElementById("verificationList"),audit=document.getElementById("dataAudit");
  if(!vr||!vt||!vl)return;
- vr.textContent=Object.keys(R).length;
- vt.textContent=Object.keys(R).length*4;
- vl.innerHTML=Object.keys(R).sort().map(r=>`<div class="card"><h3>${r}</h3><ol>${R[r].map(t=>`<li>${t}</li>`).join("")}</ol></div>`).join("");
+ let names=Object.keys(R), issues=[];
+ names.forEach(r=>{
+  if(!R[r]||R[r].length!==4)issues.push(`${r}: expected 4 traits, found ${R[r]?R[r].length:0}`);
+ });
+ vr.textContent=names.length;
+ vt.textContent=names.length*4;
+ if(audit){
+  audit.innerHTML=`<span class=pill>${names.length} reagents</span><span class=pill>${names.length*4} trait slots</span><span class=pill>${issues.length?issues.length+" issues found":"No structural issues found"}</span>`+
+  (issues.length?`<br>${issues.map(x=>`<span class=pill>${x}</span>`).join("")}`:`<br><span class=small>Every reagent currently has exactly four trait slots.</span>`);
+ }
+ vl.innerHTML=names.sort().map(r=>`<div class="card"><h3>${r}</h3><ol>${R[r].map(t=>`<li>${t}</li>`).join("")}</ol></div>`).join("");
 }
 function toggleEffect(e){selectedEffects=selectedEffects.includes(e)?selectedEffects.filter(x=>x!==e):selectedEffects.concat(e);renderBuilder()}function markBest(){if(!best)return;history.push(snapshot());if(history.length>20)history.shift();localStorage.TheAlchemistHistory_v1=JSON.stringify(history);let bk=countKnown(),bc=countComplete();best.disc.forEach(disc=>data()[disc[0]].learned[disc[2]]=true);best.c.forEach(r=>data()[r].qty=Math.max(0,Number(data()[r].qty||0)-1));session().crafts++;session().traits+=Math.max(0,countKnown()-bk);session().complete+=Math.max(0,countComplete()-bc);save()}
-function undoLast(){if(!history.length){alert("Aldren found no previous record to restore.");return}restore(history.pop());localStorage.TheAlchemistHistory_v1=JSON.stringify(history);save()}function markOwnedFirstTrait(){history.push(snapshot());for(const r in R){if(Number(data()[r].qty||0)>0)data()[r].learned[0]=true}save()}function resetSession(){profile().session={crafts:0,traits:0,complete:0};save()}function exportSave(){prompt("Copy this archive text:",JSON.stringify(archive))}function importSave(){let x=prompt("Paste archive text:");if(x){archive=JSON.parse(x);save()}}function resetAll(){if(confirm("Reset The Alchemist archive on this browser?")){localStorage.removeItem(SAVE_KEY);localStorage.removeItem("TheAlchemistHistory_v1");location.reload()}}function togglePlayMode(){document.body.classList.toggle("playing")}render();
+function undoLast(){if(!history.length){alert("Aldren found no previous record to restore.");return}restore(history.pop());localStorage.TheAlchemistHistory_v1=JSON.stringify(history);save()}function markOwnedFirstTrait(){history.push(snapshot());for(const r in R){if(Number(data()[r].qty||0)>0)data()[r].learned[0]=true}save()}function resetSession(){profile().session={crafts:0,traits:0,complete:0};save()}function exportSave(){prompt("Copy this archive text:",JSON.stringify(archive))}function importSave(){let x=prompt("Paste archive text:");if(x){archive=JSON.parse(x);save()}}function copyCorrectionTemplate(){let t=document.getElementById("correctionTemplate");if(!t)return;t.select();document.execCommand("copy");alert("Correction template copied.")}function resetAll(){if(confirm("Reset The Alchemist archive on this browser?")){localStorage.removeItem(SAVE_KEY);localStorage.removeItem("TheAlchemistHistory_v1");location.reload()}}function togglePlayMode(){document.body.classList.toggle("playing")}render();
 </script></body></html>
