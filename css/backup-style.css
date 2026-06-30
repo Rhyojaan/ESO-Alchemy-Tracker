@@ -1,5 +1,5 @@
 
-:root{--bg:#090603;--panel:#1b130b;--panel2:#2b1e11;--gold:#ddb04e;--gold2:#8b642a;--text:#f8ecd2;--muted:#cbb98d;--green:#6fc77a;--yellow:#d7aa47;--red:#bd5d53}
+
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#2f1f0e 0,#090603 60%);color:var(--text);font-family:Arial,system-ui,sans-serif;font-size:18px}
 header{position:sticky;top:0;z-index:10;background:#120c06ee;border-bottom:2px solid var(--gold2);padding:16px 18px}
 h1{margin:0;color:var(--gold);font-size:34px}h2{color:var(--gold);margin:0 0 12px;font-size:26px}h3{margin:0 0 10px;color:#ffe1a4;font-size:22px}
